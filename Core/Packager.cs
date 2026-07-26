@@ -99,7 +99,7 @@ public static class Packager
         foreach (var srcFile in pngFiles)
         {
             var fileName = Path.GetFileName(srcFile);
-            zip.CreateEntryFromFile(srcFile, Path.Combine(Config.ResDir, fileName));
+            zip.CreateEntryFromFile(srcFile, $"{Config.ResDir}/{fileName}");
             current++;
             reporter?.Report((double)current / total);
         }
@@ -127,16 +127,16 @@ public static class Packager
 
     private static void WriteFancyIconEntry(ZipArchive zip, string packageName, string drawable)
     {
-        var folder = Path.Combine(Config.FancyIconsDir, packageName);
+        var folder = $"{Config.FancyIconsDir}/{packageName}";
         var srcLight = Path.Combine(Config.PreprocessDir, $"{drawable}.png");
         var srcDark = Path.Combine(Config.PreprocessNightDir, $"{drawable}.png");
 
         if (!File.Exists(srcLight) || !File.Exists(srcDark) || !File.Exists(Config.SubXmlPath))
             return;
 
-        zip.CreateEntryFromFile(srcLight, Path.Combine(folder, "iconBg_0.png"));
-        zip.CreateEntryFromFile(srcDark, Path.Combine(folder, "iconBg_1.png"));
-        zip.CreateEntryFromFile(Config.SubXmlPath, Path.Combine(folder, "manifest.xml"));
+        zip.CreateEntryFromFile(srcLight, $"{folder}/iconBg_0.png");
+        zip.CreateEntryFromFile(srcDark, $"{folder}/iconBg_1.png");
+        zip.CreateEntryFromFile(Config.SubXmlPath, $"{folder}/manifest.xml");
     }
 
     // === 解析 appfilter XML ===
@@ -215,11 +215,11 @@ public static class Packager
         using var zip = ZipFile.Open(Config.PackMagiskOutputFull, ZipArchiveMode.Create);
         foreach (var file in Directory.GetFiles(Config.PackMagiskTemp, "*", SearchOption.AllDirectories))
         {
-            var arcname = Path.GetRelativePath(Config.PackMagiskTemp, file);
+            var arcname = Path.GetRelativePath(Config.PackMagiskTemp, file).Replace('\\', '/');
             zip.CreateEntryFromFile(file, arcname);
         }
         zip.CreateEntryFromFile(Config.OutputIconsFull,
-            Path.Combine("product", "media", "theme", "default", "icons"));
+            "product/media/theme/default/icons");
     }
 
     // === 功能6：MTZ 主题打包 ===
@@ -248,10 +248,10 @@ public static class Packager
         using var zip = ZipFile.Open(Config.PackMtzOutputFull, ZipArchiveMode.Create);
         foreach (var file in Directory.GetFiles(Config.PackMtzTemp, "*", SearchOption.AllDirectories))
         {
-            var arcname = Path.GetRelativePath(Config.PackMtzTemp, file);
+            var arcname = Path.GetRelativePath(Config.PackMtzTemp, file).Replace('\\', '/');
             zip.CreateEntryFromFile(file, arcname);
         }
-        zip.CreateEntryFromFile(Config.OutputIconsFull, Path.GetFileName(Config.OutputIcons));
+        zip.CreateEntryFromFile(Config.OutputIconsFull, "icons");
     }
 
     // === drawable 缓存管理 ===
