@@ -40,7 +40,10 @@ public static class Packager
         foreach (var kv in filteredMapping)
         {
             var pkg = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
-            packageDrawable[pkg] = kv.Value; // 覆盖 appfilter 的值
+            // 仅当 drawable PNG 确实存在才覆盖，否则保留 appfilter 的值
+            var pngPath = Path.Combine(Config.PreprocessDir, $"{kv.Value}.png");
+            if (File.Exists(pngPath))
+                packageDrawable[pkg] = kv.Value;
         }
         // 排除日历包（单独处理）
         packageDrawable.Remove("com.android.calendar");

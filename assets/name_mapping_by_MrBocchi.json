@@ -4,8 +4,8 @@
   "_comment-03": "对于需用活动名覆盖的应使用‘包名/活动名’格式（与ComponentInfo一致）",
 
   "_comment-1": "以下需用活动名才能覆盖桌面图标（格式：包名/活动名）",
-  "com.android.contacts/com.android.contacts.activities.DialtactsActivity": "dialer",
-  "com.android.contacts/com.android.contacts.activities.TwelveKeyDialer": "dialer",
+  "com.android.contacts/com.android.contacts.activities.DialtactsActivity": "generic_dialer",
+  "com.android.contacts/com.android.contacts.activities.TwelveKeyDialer": "generic_dialer",
   "bin.mt.plus/bin.mt.plus.MainDarkIcon": "mt_manager",
   "bin.mt.plus/bin.mt.plus.MainLightIcon": "mt_manager",
   "bin.mt.plus/bin.mt.plus.MainNoBgIcon": "mt_manager",

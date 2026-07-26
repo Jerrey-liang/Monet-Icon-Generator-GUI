@@ -123,11 +123,13 @@ public static class IconProcessor
             }
         }
 
-        // name_mapping 覆盖（带'/'的键提取包名）
+        // name_mapping 覆盖（仅当 drawable PNG 确实存在才覆盖）
         foreach (var kv in nameMapping)
         {
             var pkgName = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
-            packageDrawable[pkgName] = kv.Value;
+            var pngPath = Path.Combine(Config.PreprocessDir, $"{kv.Value}.png");
+            if (File.Exists(pngPath))
+                packageDrawable[pkgName] = kv.Value;
         }
 
         var lines = new List<string>

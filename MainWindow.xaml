@@ -27,6 +27,11 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#4F46E5"/>
                 </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#CBD5E1"/>
+                    <Setter Property="Foreground" Value="#94A3B8"/>
+                    <Setter Property="Cursor" Value="No"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
 
@@ -167,6 +172,7 @@
                                     Width="130" Height="34"
                                     Click="BtnProcess_Click"
                                     VerticalAlignment="Center"
+                                    IsEnabled="False"
                                     Style="{StaticResource Button}"/>
                             <ProgressBar Grid.Column="1" x:Name="PbProcess"
                                          Height="18" Margin="18,0,0,0"
@@ -192,12 +198,14 @@
                                     Content="打包 Magisk 模块"
                                     Width="150" Height="34"
                                     Click="BtnPackageMagisk_Click"
+                                    IsEnabled="False"
                                     Style="{StaticResource Button}"
                                     Margin="0,0,10,6"/>
                             <Button x:Name="BtnPackageMtz"
                                     Content="打包 MTZ 主题"
                                     Width="140" Height="34"
                                     Click="BtnPackageMtz_Click"
+                                    IsEnabled="False"
                                     Style="{StaticResource Button}"
                                     Margin="0,0,0,6"/>
                         </WrapPanel>

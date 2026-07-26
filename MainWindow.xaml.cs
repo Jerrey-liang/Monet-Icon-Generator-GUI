@@ -16,24 +16,39 @@ public partial class MainWindow : Window
         CbDarkMode.Checked += (_, _) => PanelLightMode.IsEnabled = false;
         CbDarkMode.Unchecked += (_, _) => PanelLightMode.IsEnabled = true;
 
+        // 启动时所有按钮禁用，资源就绪后逐步开放
+        BtnFetchColors.IsEnabled = false;
+        BtnProcess.IsEnabled = false;
+        BtnPackageMagisk.IsEnabled = false;
+        BtnPackageMtz.IsEnabled = false;
+
         Loaded += async (_, _) => await StartupCheckAsync();
     }
 
     // === 启动时 Lawnicons 资源检查 ===
     private async Task StartupCheckAsync()
     {
+        var startupReporter = new ProgressReporter((detail, pct) =>
+        {
+            Dispatcher.Invoke(() =>
+                TxtStatus.Text = $"{detail}（{pct * 100:F0}%）");
+        });
+
         try
         {
             TxtStatus.Text = "正在检查 Lawnicons 资源...";
-            await LawniconsUpdater.EnsureResourcesAsync();
+            await LawniconsUpdater.EnsureResourcesAsync(startupReporter);
             TxtStatus.Text = "就绪";
 
             if (!Packager.DrawableCacheIsValid())
             {
                 TxtStatus.Text = "正在解压图标资源...";
-                await Task.Run(() => Packager.ExtractDrawableCache());
+                await Task.Run(() => Packager.ExtractDrawableCache(startupReporter));
                 TxtStatus.Text = "就绪";
             }
+
+            // 资源就绪，开放第1步
+            BtnFetchColors.IsEnabled = true;
         }
         catch (Exception ex)
         {
@@ -59,6 +74,7 @@ public partial class MainWindow : Window
                 TxtColorStatus.Foreground = new SolidColorBrush(Colors.Green);
                 TxtStatus.Text = $"已获取 {accentCount} 个色调";
                 LoadColorPreview();
+                BtnProcess.IsEnabled = true; // 开放第2步
             }
             else
             {
@@ -190,6 +206,8 @@ public partial class MainWindow : Window
             PbProcess.Value = 100;
             TxtProcessStatus.Text = $"完成！icons 已生成。\n{Config.OutputIconsFull}";
             TxtStatus.Text = "图标已生成";
+            BtnPackageMagisk.IsEnabled = true; // 开放第3步
+            BtnPackageMtz.IsEnabled = true;
         }
         catch (Exception ex)
         {
