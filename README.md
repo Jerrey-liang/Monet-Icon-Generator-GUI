@@ -17,23 +17,11 @@
 
 ## 🛠️ 使用说明
 
-### 0. 环境准备
+### 1. 环境准备
 
 - **手机端**：解锁 Bootloader 并获取 root 权限
 - **电脑端**：安装 [Android SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools)，确保 `adb` 可在命令行中直接运行
 - **手机端**：开启 USB 调试，连接电脑后允许调试授权
-
-### 1. 启动程序
-
-```
-解压后双击 MonetIconGenerator.exe
-```
-
-或使用 Visual Studio / dotnet 运行：
-
-```
-dotnet run
-```
 
 ### 2. 操作步骤
 
