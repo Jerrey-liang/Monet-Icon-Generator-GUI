@@ -5,6 +5,8 @@
 
   "_comment-1": "以下需用活动名才能覆盖桌面图标（格式：包名/活动名）",
   "com.android.contacts": "google_contacts",
+  "com.android.incall": "google_phone",
+  "com.android.server.telecom": "google_phone",
   "bin.mt.plus/bin.mt.plus.MainDarkIcon": "mt_manager",
   "bin.mt.plus/bin.mt.plus.MainLightIcon": "mt_manager",
   "bin.mt.plus/bin.mt.plus.MainNoBgIcon": "mt_manager",
