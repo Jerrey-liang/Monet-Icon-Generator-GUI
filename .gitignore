@@ -25,3 +25,4 @@ colors.json
 temp/
 *.tmp
 publish/
+*.zip
