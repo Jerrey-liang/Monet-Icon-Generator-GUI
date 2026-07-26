@@ -41,23 +41,33 @@
   <!-- ============================================================
        Release 发布配置
        使用: dotnet publish -c Release
-       说明: 自包含、ReadyToRun、输出为文件夹（打 ZIP 分发）
+       说明: 自包含、仅中文语言、排除lawnicons素材（运行时自下载）
        ============================================================ -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <!-- 自包含：用户无需安装 .NET 运行时 -->
+    <!-- 自包含=true ~149MB || false ~8MB（需用户装.NET 8 Runtime） -->
     <SelfContained>true</SelfContained>
-    <!-- 目标系统 -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <!-- ReadyToRun：预编译 IL，启动更快 -->
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <!-- 不使用单文件模式，保持 assets/ 目录可访问 -->
+    <!-- ReadyToRun 会增加 ~20MB（双份 IL+原生），关闭以减小体积 -->
+    <PublishReadyToRun>false</PublishReadyToRun>
     <PublishSingleFile>false</PublishSingleFile>
-    <!-- 裁剪未使用的程序集（保守模式，避免误删 WPF 依赖） -->
     <PublishTrimmed>false</PublishTrimmed>
-    <!-- 生成单个压缩包 -->
     <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
-    <!-- 输出到 publish/ 目录 -->
     <PublishDir>$(MSBuildThisFileDirectory)publish\</PublishDir>
+    <!-- 只保留中文语言包 -->
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <!-- 移除调试支持和未使用功能 -->
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <EventSourceSupport>false</EventSourceSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
   </PropertyGroup>
+
+  <!-- 发布时排除 lawnicons_assets（运行时自动下载），砍掉 ~40MB -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <Content Remove="lawnicons_assets\**\*" />
+    <None Remove="lawnicons_assets\**\*" />
+  </ItemGroup>
 
 </Project>

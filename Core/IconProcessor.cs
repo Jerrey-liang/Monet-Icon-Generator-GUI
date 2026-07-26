@@ -83,8 +83,8 @@ public static class IconProcessor
     {
         Console.WriteLine($"正在生成 {Config.ThemeFallbackXml}...");
 
-        // 读取 name_mapping
-        var mapping = new Dictionary<string, string>();
+        // 读取 name_mapping（去注释键）
+        var nameMapping = new Dictionary<string, string>();
         if (File.Exists(Config.NameMapping))
         {
             var json = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(
@@ -92,16 +92,11 @@ public static class IconProcessor
             if (json != null)
                 foreach (var kv in json)
                     if (!kv.Key.StartsWith("_comment-"))
-                        mapping[kv.Key] = kv.Value;
+                        nameMapping[kv.Key] = kv.Value;
         }
 
-        // 读取 appfilter
-        var writtenPackages = new HashSet<string>();
-        var lines = new List<string>
-        {
-            "<?xml version='1.0' encoding='utf-8' standalone='yes'?>",
-            "<MIUI_Theme_Values>"
-        };
+        // 构建 包名→drawable 字典：先填 appfilter，再用 name_mapping 覆盖
+        var packageDrawable = new Dictionary<string, string>();
 
         if (File.Exists(Config.AppfilterXml))
         {
@@ -122,20 +117,28 @@ public static class IconProcessor
                 var pkgName = compStr[..slashIdx];
                 var clsName = compStr[(slashIdx + 1)..];
                 if (clsName.Contains('*')) continue;
-                if (!writtenPackages.Add(pkgName)) continue;
+                if (packageDrawable.ContainsKey(pkgName)) continue;
 
-                lines.Add($"<drawable name=\"{pkgName}.png\">{drawable}.png</drawable>");
+                packageDrawable[pkgName] = drawable;
             }
         }
 
-        // 处理 name_mapping 补充映射
-        foreach (var kv in mapping)
+        // name_mapping 覆盖（带'/'的键提取包名）
+        foreach (var kv in nameMapping)
         {
             var pkgName = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
-            lines.Add($"<drawable name=\"{pkgName}.png\">{kv.Value}.png</drawable>");
+            packageDrawable[pkgName] = kv.Value;
         }
 
+        var lines = new List<string>
+        {
+            "<?xml version='1.0' encoding='utf-8' standalone='yes'?>",
+            "<MIUI_Theme_Values>"
+        };
+        foreach (var kv in packageDrawable)
+            lines.Add($"<drawable name=\"{kv.Key}.png\">{kv.Value}.png</drawable>");
         lines.Add("</MIUI_Theme_Values>");
+
         File.WriteAllText(Config.ThemeFallbackXml, string.Join("\n", lines), System.Text.Encoding.UTF8);
     }
 

@@ -29,30 +29,30 @@ public static class Packager
         var (packageNames, validItems) = ParseAppfilterItems();
         var filteredMapping = LoadNameMapping();
 
-        int total = packageNames.Count + filteredMapping.Count - 1; // 减日日历
+        // 构建 包名→drawable 字典：先填 appfilter，再用 name_mapping 覆盖
+        var packageDrawable = new Dictionary<string, string>();
+        foreach (var (fullPath, drawable) in validItems)
+        {
+            var packageName = fullPath.Split('/')[0];
+            if (!packageDrawable.ContainsKey(packageName))
+                packageDrawable[packageName] = drawable;
+        }
+        foreach (var kv in filteredMapping)
+        {
+            var pkg = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
+            packageDrawable[pkg] = kv.Value; // 覆盖 appfilter 的值
+        }
+        // 排除日历包（单独处理）
+        packageDrawable.Remove("com.android.calendar");
+
+        int total = packageDrawable.Count;
         int current = 0;
 
         using var zip = ZipFile.Open(outputPath, ZipArchiveMode.Create);
-        var writtenPackages = new HashSet<string> { "com.android.calendar" };
 
-        // 处理 appfilter 项
-        foreach (var (fullPath, drawable) in validItems)
+        foreach (var (packageName, drawable) in packageDrawable)
         {
-            var parts = fullPath.Split('/');
-            var packageName = parts[0];
-            if (!writtenPackages.Add(packageName)) continue;
-
             WriteFancyIconEntry(zip, packageName, drawable);
-            current++;
-            reporter?.Report((double)current / total);
-        }
-
-        // 处理 name_mapping 补充项
-        foreach (var kv in filteredMapping)
-        {
-            // 带 '/' 的键为"包名/活动名"格式，取包名作为文件夹名
-            var folder = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
-            WriteFancyIconEntry(zip, folder, kv.Value);
             current++;
             reporter?.Report((double)current / total);
         }
