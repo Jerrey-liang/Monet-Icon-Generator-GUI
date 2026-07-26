@@ -1,0 +1,26 @@
+# Build
+bin/
+obj/
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Assets that are downloaded at runtime
+lawnicons_assets/drawable.zip
+lawnicons_assets/appfilter_plain.xml
+lawnicons_assets/version.json
+lawnicons_assets/backup/
+
+# Outputs
+icons
+HyperOS Monet Launcher.zip
+HyperOS Monet Launcher.mtz
+colors.json
+temp/
+*.tmp

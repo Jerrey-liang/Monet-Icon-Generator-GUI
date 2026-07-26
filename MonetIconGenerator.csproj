@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- 扩展隐式 using（WPF 默认不含 System.IO） -->
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <Using Include="System.Net.Http" />
+    <Using Include="System.Net.Http.Headers" />
+    <Using Include="System.Net.Http.Json" />
+    <Using Include="System.Text" />
+    <Using Include="System.Text.Json" />
+    <Using Include="System.ComponentModel" />
+    <Using Include="System.Text.RegularExpressions" />
+    <Using Include="System.Xml.Linq" />
+  </ItemGroup>
+
+  <!-- 排除 assets 中的 .cs 文件（已整合到 Core/） -->
+  <ItemGroup>
+    <Compile Remove="assets\**\*.cs" />
+    <None Remove="assets\**\*.cs" />
+  </ItemGroup>
+
+  <!-- 素材文件复制到输出目录 -->
+  <ItemGroup>
+    <None Update="assets\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="assets\" />
+    <None Update="lawnicons_assets\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="lawnicons_assets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
+  </ItemGroup>
+
+</Project>
