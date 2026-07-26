@@ -50,7 +50,8 @@ public static class Packager
         // 处理 name_mapping 补充项
         foreach (var kv in filteredMapping)
         {
-            var folder = kv.Key; // 可能包含 '/'
+            // 带 '/' 的键为"包名/活动名"格式，取包名作为文件夹名
+            var folder = kv.Key.Contains('/') ? kv.Key.Split('/')[0] : kv.Key;
             WriteFancyIconEntry(zip, folder, kv.Value);
             current++;
             reporter?.Report((double)current / total);

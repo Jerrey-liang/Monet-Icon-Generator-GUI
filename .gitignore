@@ -24,3 +24,4 @@ HyperOS Monet Launcher.mtz
 colors.json
 temp/
 *.tmp
+publish/

@@ -38,4 +38,26 @@
     <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
   </ItemGroup>
 
+  <!-- ============================================================
+       Release 发布配置
+       使用: dotnet publish -c Release
+       说明: 自包含、ReadyToRun、输出为文件夹（打 ZIP 分发）
+       ============================================================ -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- 自包含：用户无需安装 .NET 运行时 -->
+    <SelfContained>true</SelfContained>
+    <!-- 目标系统 -->
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <!-- ReadyToRun：预编译 IL，启动更快 -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <!-- 不使用单文件模式，保持 assets/ 目录可访问 -->
+    <PublishSingleFile>false</PublishSingleFile>
+    <!-- 裁剪未使用的程序集（保守模式，避免误删 WPF 依赖） -->
+    <PublishTrimmed>false</PublishTrimmed>
+    <!-- 生成单个压缩包 -->
+    <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
+    <!-- 输出到 publish/ 目录 -->
+    <PublishDir>$(MSBuildThisFileDirectory)publish\</PublishDir>
+  </PropertyGroup>
+
 </Project>
